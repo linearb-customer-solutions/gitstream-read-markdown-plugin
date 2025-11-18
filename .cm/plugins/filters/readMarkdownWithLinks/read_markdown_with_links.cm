@@ -1,0 +1,62 @@
+# -*- mode: yaml -*-
+# This example configuration shows how to use the readMarkdownWithLinks plugin
+# to automatically include documentation content in pull request comments
+
+manifest:
+  version: 1.0
+
+automations:
+  # Comment with documentation content when docs are changed
+  include_docs_on_change:
+    if:
+      - {{ pr.files | match(regex=r"docs/.*\.md") | some }}
+    run:
+      - action: add-comment@v1
+        args:
+          comment: |
+            📚 **Documentation Changes Detected**
+            
+            Here's the updated documentation content with all linked files:
+            
+            {{ "docs/README.md" | readMarkdownWithLinks }}
+
+  # Include specific doc sections with limited depth
+  include_api_docs:
+    if:
+      - {{ pr.files | match(regex=r"src/.*\.(js|ts)") | some }}
+      - {{ files | match(term="docs/api/") | some }}
+    run:
+      - action: add-comment@v1
+        args:
+          comment: |
+            🔗 **API Documentation** (showing 2 levels of linked docs):
+            
+            {{ "docs/api/README.md" | readMarkdownWithLinks(maxDepth=2) }}
+
+  # Alert when README is changed
+  readme_change_notification:
+    if:
+      - {{ pr.files | match(term="README.md") | some }}
+    run:
+      - action: add-comment@v1
+        args:
+          comment: |
+            ⚠️ **Main README Updated**
+            
+            Full documentation tree:
+            {{ "README.md" | readMarkdownWithLinks(followLinks=true, maxDepth=3) }}
+            
+            Please ensure all linked documentation remains consistent.
+
+  # Review documentation completeness
+  doc_completeness_check:
+    if:
+      - {{ pr.files | match(regex=r".*\.md") | length > 0 }}
+    run:
+      - action: add-comment@v1
+        args:
+          comment: |
+            📖 **Documentation Review**
+            
+            Please review the complete documentation structure:
+            {{ pr.files | match(regex=r".*\.md") | first | readMarkdownWithLinks }}

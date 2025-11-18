@@ -1,0 +1,25 @@
+{
+  "name": "gitstream-read-markdown-plugin",
+  "version": "1.0.0",
+  "description": "GitStream plugin for reading markdown files with internal link following",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": ["gitstream", "markdown", "plugin", "documentation", "linearb"],
+  "author": "LinearB Customer Solutions",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linearb-customer-solutions/gitstream-read-markdown-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/linearb-customer-solutions/gitstream-read-markdown-plugin/issues"
+  },
+  "homepage": "https://github.com/linearb-customer-solutions/gitstream-read-markdown-plugin#readme",
+  "files": [
+    "index.js",
+    "README.md",
+    "install.sh"
+  ]
+}
