@@ -16,13 +16,13 @@ automations:
         args:
           guidelines: |
             Code Review Guidelines:
-            {{ "REVIEW_RULES.md" | readMarkdownWithLinks }}
+            {{ "REVIEW_RULES.md" | readMarkdownWithLinks | dump }}
             
             Project Documentation Context:
-            {{ "README.md" | readMarkdownWithLinks(maxDepth=2) }}
+            {{ "README.md" | readMarkdownWithLinks(maxDepth=2) | dump }}
             
             Architecture and Design:
-            {{ "docs/ARCHITECTURE.md" | readMarkdownWithLinks(maxDepth=1) }}
+            {{ "docs/ARCHITECTURE.md" | readMarkdownWithLinks(maxDepth=1) | dump }}
 
   # Context-aware reviews based on changed file areas
   contextual_ai_review:
@@ -33,21 +33,21 @@ automations:
         args:
           guidelines: |
             Base Review Guidelines:
-            {{ "REVIEW_RULES.md" | readMarkdownWithLinks }}
+            {{ "REVIEW_RULES.md" | readMarkdownWithLinks | dump }}
             
             {% if pr.files | match(regex=r"src/api/.*") | some %}
             API-Specific Guidelines and Documentation:
-            {{ "docs/api/README.md" | readMarkdownWithLinks }}
+            {{ "docs/api/README.md" | readMarkdownWithLinks | dump }}
             {% endif %}
             
             {% if pr.files | match(regex=r".*test.*") | some %}
             Testing Standards and Guidelines:
-            {{ "docs/testing/README.md" | readMarkdownWithLinks }}
+            {{ "docs/testing/README.md" | readMarkdownWithLinks | dump }}
             {% endif %}
             
             {% if pr.files | match(regex=r".*security.*") | some %}
             Security Guidelines:
-            {{ "docs/security/GUIDELINES.md" | readMarkdownWithLinks }}
+            {{ "docs/security/GUIDELINES.md" | readMarkdownWithLinks | dump }}
             {% endif %}
 
   # Large PR reviews with extensive context
@@ -60,16 +60,16 @@ automations:
         args:
           guidelines: |
             Comprehensive Review Guidelines for Large Changes:
-            {{ "REVIEW_RULES.md" | readMarkdownWithLinks }}
+            {{ "REVIEW_RULES.md" | readMarkdownWithLinks | dump }}
             
             Full Project Context:
-            {{ "README.md" | readMarkdownWithLinks(maxDepth=1) }}
+            {{ "README.md" | readMarkdownWithLinks(maxDepth=1) | dump }}
             
             Contributing Guidelines:
-            {{ "CONTRIBUTING.md" | readMarkdownWithLinks }}
+            {{ "CONTRIBUTING.md" | readMarkdownWithLinks | dump }}
             
             Architecture Documentation:
-            {{ "docs/ARCHITECTURE.md" | readMarkdownWithLinks(maxDepth=2) }}
+            {{ "docs/ARCHITECTURE.md" | readMarkdownWithLinks(maxDepth=2) | dump }}
 
   # First-time contributor guidance
   enhanced_review_new_contributors:
@@ -81,13 +81,13 @@ automations:
         args:
           guidelines: |
             Welcome! Here are our code review guidelines with full context:
-            {{ "REVIEW_RULES.md" | readMarkdownWithLinks }}
+            {{ "REVIEW_RULES.md" | readMarkdownWithLinks | dump }}
             
             New Contributor Guide:
-            {{ "docs/ONBOARDING.md" | readMarkdownWithLinks }}
+            {{ "docs/ONBOARDING.md" | readMarkdownWithLinks | dump }}
             
             Project Overview:
-            {{ "README.md" | readMarkdownWithLinks(maxDepth=1) }}
+            {{ "README.md" | readMarkdownWithLinks(maxDepth=1) | dump }}
             
             Contributing Guidelines:
-            {{ "CONTRIBUTING.md" | readMarkdownWithLinks(maxDepth=1) }}
+            {{ "CONTRIBUTING.md" | readMarkdownWithLinks(maxDepth=1) | dump }}

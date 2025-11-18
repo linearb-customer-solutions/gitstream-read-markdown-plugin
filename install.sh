@@ -64,41 +64,24 @@ detect_installation_type() {
     esac
 }
 
-# Function to install via git submodule
-install_via_submodule() {
+# Function to install plugin files
+install_plugin_files() {
     echo ""
-    echo "🔗 Installing via Git Submodule..."
+    echo "📦 Installing plugin files..."
     
-    # Check if we're in a git repository
-    if [ ! -d ".git" ]; then
-        echo "❌ Error: Not in a git repository"
-        echo "   Git submodules can only be added to git repositories"
-        echo "   Please initialize a git repository first:"
-        echo "   git init"
-        exit 1
-    fi
+    # Create plugin directory
+    mkdir -p "$PLUGIN_DIR"
     
-    # Remove existing directory if it exists
-    if [ -d "$PLUGIN_DIR" ]; then
-        echo "⚠️  Directory $PLUGIN_DIR already exists. Removing..."
-        rm -rf "$PLUGIN_DIR"
-    fi
-    
-    # Add submodule
-    git submodule add "$REPO_URL" "$PLUGIN_DIR" || {
-        echo "❌ Failed to add git submodule"
-        print_manual_instructions
+    # Download the main plugin file
+    echo "⬇️  Downloading index.js..."
+    curl -fsSL "https://raw.githubusercontent.com/linearb-customer-solutions/gitstream-read-markdown-plugin/main/index.js" -o "$PLUGIN_DIR/index.js" || {
+        echo "❌ Failed to download plugin file"
+        echo "   Please check your internet connection and try again"
         exit 1
     }
     
-    echo "✅ Successfully added as git submodule"
-    echo "   Location: $PLUGIN_DIR"
-    echo ""
-    echo "📝 Submodule benefits:"
-    echo "   • Version control and tracking"
-    echo "   • Easy updates with 'git submodule update --remote'"
-    echo "   • Team synchronization"
-    echo "   • Rollback to specific versions"
+    echo "✅ Successfully installed plugin files"
+    echo "   Location: $PLUGIN_DIR/index.js"
     
     return 0
 }
@@ -110,10 +93,12 @@ print_manual_instructions() {
     echo ""
     if [ "$INSTALL_TYPE" = "organization" ]; then
         echo "For organization-level installation:"
-        echo "  git submodule add $REPO_URL plugins/filters/$PLUGIN_NAME"
+        echo "  mkdir -p plugins/filters/$PLUGIN_NAME"
+        echo "  curl -fsSL https://raw.githubusercontent.com/linearb-customer-solutions/gitstream-read-markdown-plugin/main/index.js -o plugins/filters/$PLUGIN_NAME/index.js"
     else
         echo "For repository-level installation:"
-        echo "  git submodule add $REPO_URL .cm/plugins/filters/$PLUGIN_NAME"
+        echo "  mkdir -p .cm/plugins/filters/$PLUGIN_NAME"
+        echo "  curl -fsSL https://raw.githubusercontent.com/linearb-customer-solutions/gitstream-read-markdown-plugin/main/index.js -o .cm/plugins/filters/$PLUGIN_NAME/index.js"
     fi
 }
 
@@ -144,10 +129,10 @@ automations:
       - action: code-review@v1
         args:
           guidelines: |
-            {{ "REVIEW_RULES.md" | readMarkdownWithLinks }}
+            {{ "REVIEW_RULES.md" | readMarkdownWithLinks | dump }}
             
             Project Context:
-            {{ "README.md" | readMarkdownWithLinks(maxDepth=2) }}
+            {{ "README.md" | readMarkdownWithLinks(maxDepth=2) | dump }}
 EOF
 
     echo "✅ Created example config: $config_file"
@@ -161,8 +146,8 @@ main() {
     echo "🎯 Installing to: $PLUGIN_DIR"
     echo "📋 Installation type: $INSTALL_TYPE"
     
-    # Install via git submodule only
-    install_via_submodule
+    # Install plugin files
+    install_plugin_files
     
     create_example_config
     
@@ -182,7 +167,7 @@ main() {
     echo "🔧 Plugin Location: $PLUGIN_DIR"
     echo "📚 Documentation: https://github.com/linearb-customer-solutions/gitstream-read-markdown-plugin"
     echo ""
-    echo "🔄 Update plugin: git submodule update --remote $PLUGIN_DIR"
+    echo "🔄 Update plugin: Re-run this installer to get the latest version"
 }
 
 # Run main function
