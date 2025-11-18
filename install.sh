@@ -11,6 +11,10 @@ REPO_URL="https://github.com/linearb-customer-solutions/gitstream-read-markdown-
 echo "🔧 GitStream $PLUGIN_NAME Plugin Installer"
 echo ""
 
+# Initialize global variables
+PLUGIN_DIR=""
+INSTALL_TYPE=""
+
 # Function to detect installation type and set paths
 detect_installation_type() {
     echo "🔍 Detecting installation type..."
